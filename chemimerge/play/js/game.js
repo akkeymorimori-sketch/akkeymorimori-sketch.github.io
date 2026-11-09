@@ -101,13 +101,15 @@ function mols() { const r = []; for (let b = world.getBodyList(); b; b = b.getNe
 // ---------- ゲームの状態 ----------
 let mode = 'title'; // title | play | pause | over
 let score = 0, best = store.get('cm.best', 0), maxLv = 0, revived = false, submitted = true;
-let discovered = new Set(store.get('cm.disc10', [0, 1, 2, 3, 4]));
+let discovered = new Set(store.get('cm.disc10', []));
 // フラーレン2個がくっつくと光って消えてボーナス
-const C60_BONUS = 2000;
+const C60_BONUS = 1000; // 1ゲームの平均がボットで約3600点。2個消しは6回に1回くらい
 let c60Count = store.get('cm.c60', 0); // 今までにフラーレンを作った回数（図鑑に出す）
 let cur = 0, next = 0, aimX = W / 2, heldAng = 0, cooldown = 0, danger = 0;
 const mergeQ = [], fx = [], texts = [];
-const SPAWN_W = [30, 26, 20, 14, 10];
+// 陽子〜ニトロベンゼンが落ちてくる（大きいほど出にくい。合計100）。ボットで平均270個・6回に1回フラーレン2個消し
+const SPAWN_W = [22, 20, 18, 16, 14, 10];
+for (let i = 0; i < SPAWN_W.length; i++) discovered.add(i); // 落ちてくる分子は最初から図鑑に
 function rndLevel() { let r = Math.random() * 100; for (let i = 0; i < SPAWN_W.length; i++) { if ((r -= SPAWN_W[i]) < 0) return i; } return 0; }
 
 // ---------- 画面（オーバーレイ） ----------
